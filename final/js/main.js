@@ -6,7 +6,9 @@
 let sceneContainer = document.querySelector
 ("#scene-container");
 
-let happyghost;
+let happyghost, sadghost, lamp;
+let currentGhost = 'happy';
+
 
 
 import * as THREE from 'three';
@@ -19,7 +21,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // ~~~~~~~~~~~~~~~~Set up~~~~~~~~~~~~~~~~
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x3a3a3a);
-scene.fog = new THREE.Fog(0xcce0ff, 10, 50);
+scene.fog = new THREE.Fog(0xcce0ff, 35, 100); //100 = farther
 
 
 
@@ -34,38 +36,32 @@ renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
 sceneContainer.appendChild(renderer.domElement);
 
 
-
-
-camera.position.z = 14.5;
+camera.position.z = 14.5; //14.5
 
 function animate(){
 requestAnimationFrame(animate);
 
-    if (happyghost) {
-        let time = Date.now() * 0.001; // convert to seconds
-        let radiusX = 0.05; // how wide the path is
-        let radiusZ = 0.05; // how tall the path is
-        let speed = 0.75; // how fast the ghost moves
+const ghost = currentGhost === 'happy' ? happyghost : sadghost; //model swap
 
-        // Move in an elliptical path
-        let x = Math.cos(time * speed) * radiusX;
-        let z = Math.sin(time * speed) * radiusZ;
+if (ghost) {
+let time = Date.now() * 0.001; //animation/ timeee
+let radiusX = 0.05; 
+let radiusZ = 0.05;
+let speed = 0.75; //LITTLE GHOST's RUN SPEED
 
-        happyghost.position.x = x;
-        happyghost.position.z = z;
-        
-        let bounceHeight = 0.7;
-        let bounceSpeed = 9; 
-        let y = -3 + Math.sin(time * bounceSpeed) * bounceHeight;
+let x = Math.cos(time * speed) * radiusX;
+let z = Math.sin(time * speed) * radiusZ;
+let y = -3 + Math.sin(time * 9) * 0.7;
+//helped from tutorial
 
-         happyghost.position.set(x, y, z);
+ghost.position.set(x, y, z);
 
-        // Make the ghost face the direction it's moving
-        let nextX = Math.cos((time + 0.05) * speed) * radiusX;
-        let nextZ = Math.sin((time + 0.05) * speed) * radiusZ;
-        let angle = Math.atan2(nextZ - z, nextX - x);
-        happyghost.rotation.y = -angle; // rotate to face movement direction
-    }
+let nextX = Math.cos((time + 0.05) * speed) * radiusX;
+let nextZ = Math.sin((time + 0.05) * speed) * radiusZ;
+let angle = Math.atan2(nextZ - z, nextX - x);
+ghost.rotation.y = -angle;
+}
+
     renderer.render(scene, camera);
 }
 
@@ -86,8 +82,11 @@ scene.add(lightleft);
 
 // ~~~~~~~~~~~~~~~~ Initiate add-ons ~~~~~~~~~~~~~~~~
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false;    // Disabling any movement for the viewer
+controls.enableRotate = false; 
+controls.enablePan = false;    
 
-const loader = new GLTFLoader(); // to load 3d models
+const loader = new GLTFLoader(); 
 
 loader.load('assets/HappyGhost(test).gltf', function(gltf){
     happyghost = gltf.scene;
@@ -97,6 +96,44 @@ loader.load('assets/HappyGhost(test).gltf', function(gltf){
 
 
 });
+
+loader.load('assets/SadGhost(test).gltf', function (gltf) {
+    sadghost = gltf.scene;
+    sadghost.scale.set(1.5, 1.5, 1.5);
+    sadghost.position.y = -3;
+});
+
+const envLoader = new GLTFLoader();
+
+envLoader.load('assets/ghostroom3.gltf', function(gltf) {
+    const environment = gltf.scene;
+    scene.add(environment);
+    environment.position.set(0, -4, 0); 
+    environment.scale.set(4, 4, 4); 
+});
+
+const lampLoader = new GLTFLoader();
+
+lampLoader.load('assets/lamp.gltf', function(gltf) {
+    const lamp = gltf.scene;
+    scene.add(lamp);
+    lamp.scale.set(1.5, 1.5, 1.5);
+    lamp.position.set(4, -3, 5);
+   
+    window.addEventListener('click', () => {
+        if (currentGhost === 'happy') {
+            scene.remove(happyghost);
+            scene.add(sadghost);
+            currentGhost = 'sad';
+        } else {
+            scene.remove(sadghost);
+            scene.add(happyghost);
+            currentGhost = 'happy';
+        }
+    });
+});
+
+
 
 
 
