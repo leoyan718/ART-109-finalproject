@@ -1,7 +1,17 @@
 body{
-    margin: 0;
+background-color: black;
+  color: white;
+  margin: 0;
+  font-family: sans-serif;
 }
 
+main{
+    text-align: center;
+}
+
+header{
+    text-align: center;
+}
 
 #scene-container{
     background-color:black;
