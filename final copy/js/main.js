@@ -8,7 +8,8 @@ let sceneContainer = document.querySelector
 
 let happyghost, sadghost, lamp;
 let currentGhost = 'happy';
-
+let lampOn, lampOff;
+let isLampOn = true;
 
 
 import * as THREE from 'three';
@@ -21,7 +22,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // ~~~~~~~~~~~~~~~~Set up~~~~~~~~~~~~~~~~
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x3a3a3a);
-scene.fog = new THREE.Fog(0xcce0ff, 35, 100); //100 = farther
+scene.fog = new THREE.Fog(0xcce0ff, 100, 100); //100 = farther
 
 
 
@@ -114,11 +115,22 @@ envLoader.load('assets/ghostroom3.gltf', function(gltf) {
 
 const lampLoader = new GLTFLoader();
 
+lampLoader.load('assets/litlamptest3.gltf', function(gltf) {
+    lampOn = gltf.scene;
+    lampOn.scale.set(1.5, 1.5, 1.5);
+    lampOn.position.set(4, -3, 5);
+    scene.add(lampOn);
+});
+
+// unlit lamp
 lampLoader.load('assets/lamp.gltf', function(gltf) {
-    const lamp = gltf.scene;
-    scene.add(lamp);
-    lamp.scale.set(1.5, 1.5, 1.5);
-    lamp.position.set(4, -3, 5);
+    lampOff = gltf.scene;
+    lampOff.scale.set(1.5, 1.5, 1.5);
+    lampOff.position.set(4, -3, 5);
+});
+
+
+    
    
     window.addEventListener('click', () => {
         if (currentGhost === 'happy') {
@@ -130,8 +142,17 @@ lampLoader.load('assets/lamp.gltf', function(gltf) {
             scene.add(happyghost);
             currentGhost = 'happy';
         }
+
+        if (isLampOn && lampOn && lampOff) {
+        scene.remove(lampOn);
+        scene.add(lampOff);
+        isLampOn = false;
+    } else if (!isLampOn && lampOn && lampOff) {
+        scene.remove(lampOff);
+        scene.add(lampOn);
+        isLampOn = true;
+    }
     });
-});
 
 
 
