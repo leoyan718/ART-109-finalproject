@@ -12,6 +12,7 @@ let lampOn, lampOff;
 let isLampOn = true;
 let room1, room2;
 let isRoom1Visible = true;
+let piano;
 
 const happySpeed = 0.75;
 const happyJump = 0.7;
@@ -145,7 +146,15 @@ lampLoader.load('assets/lamp.gltf', function(gltf) {
     lampOff.position.set(4, -3, 5);
 });
 
+const pianoLoader = new GLTFLoader();
 
+pianoLoader.load('assets/piano1.gltf', function (gltf) {
+    piano = gltf.scene;
+    piano.scale.set(1.5, 1.5, 1.5); 
+    piano.position.set(-2, -5, 4.5); 
+    piano.rotation.y = Math.PI / 2;
+    scene.add(piano);
+});
     
    
     window.addEventListener('click', () => {

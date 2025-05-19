@@ -17,7 +17,7 @@
     }
   </script>
 
-  <!-- Link to your Javascript file as a type="module" -->
+
   <script type="module" src="js/main.js"></script>
 
 
@@ -29,7 +29,7 @@
   </header>
 
   <main>
-    <p>Click anywhere on the screen to turn off/on the lamp to see the Ghost's true feelings.</p>
+    <p>Click anywhere on the screen to turn off/on the lamp to see the Ghost's true feelings. </p>
     <div id="scene-container">
       <!-- three.js scene will be inserted here -->
     </div>
@@ -37,6 +37,7 @@
     <!-- GHOST TEXT -->
     <div id="ghostText">Will I ever be truly happy?</div>
   </main>
+
   
   <audio id="clickSound" src="assets/lightswitch.mp3" preload="auto"></audio>
 
@@ -47,13 +48,14 @@
       "May I be happy?",
       "I want to smile every day.",
       "Without any worries.",
-      "Please tell me it's okay.",
+      "Please tell me it's okay to be happy.",
       "I think tears are coming.",
       "If I keep holding on...",
       "Will it come one day?",
       "Maybe tommorow..."
       
     ];
+
 
     let index = 0;
 
@@ -69,7 +71,7 @@
 
     ghostText.classList.add('visible'); 
 
-    setInterval(showNextPhrase, 3000); // CHANGE __ Seconds (until fade)
+    setInterval(showNextPhrase, 3400); // CHANGE __ Seconds (until fade)
 
 
   const clickSound = document.getElementById('clickSound');
@@ -78,6 +80,10 @@
   clickSound.play();
   });
   </script>
+
+<audio id="song" src="assets/HAPPYPIANO.mp3"></audio>
+<script src="js/sound.js"></script>
+
 </body>
 
 </html>
