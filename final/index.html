@@ -2,40 +2,82 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HAPPY</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 
   <!-- use an import map to link to the Three.js CDN -->
-
   <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@v0.174.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.174.0/examples/jsm/"
-        }
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@v0.174.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.174.0/examples/jsm/"
       }
-    </script>
+    }
+  </script>
 
-
-  <!-- Link to your Javascript file as a type="module", this will execute the file after the HTML is loaded -->
+  <!-- Link to your Javascript file as a type="module" -->
   <script type="module" src="js/main.js"></script>
+
 
 </head>
 
-
 <body>
   <header>
-<h1>May I be Happy?</h1>
+    <h1>May I be <span class="highlight">Happy?</span></h1>
   </header>
-  <main>
-    Click anywhere on the screen to reveal the Ghost's true feelings.
-    <div id="scene-container"> 
-      <!-- three scene will be inserted here -->
-    </div>
-  </main>
 
+  <main>
+    <p>Click anywhere on the screen to turn off/on the lamp to see the Ghost's true feelings.</p>
+    <div id="scene-container">
+      <!-- three.js scene will be inserted here -->
+    </div>
+
+    <!-- GHOST TEXT -->
+    <div id="ghostText">Will I ever be truly happy?</div>
+  </main>
+  
+  <audio id="clickSound" src="assets/lightswitch.mp3" preload="auto"></audio>
+
+  <script>
+    const ghostText = document.getElementById('ghostText');
+    const phrases = [
+      "Will I ever truly be happy?",
+      "May I be happy?",
+      "I want to smile every day.",
+      "Without any worries.",
+      "Please tell me it's okay.",
+      "I think tears are coming.",
+      "If I keep holding on...",
+      "Will it come one day?",
+      "Maybe tommorow..."
+      
+    ];
+
+    let index = 0;
+
+    function showNextPhrase() {
+      ghostText.classList.remove('visible'); 
+
+      setTimeout(() => {
+        index = (index + 1) % phrases.length;
+        ghostText.textContent = phrases[index];
+        ghostText.classList.add('visible'); 
+      }, 500); 
+    }
+
+    ghostText.classList.add('visible'); 
+
+    setInterval(showNextPhrase, 3000); // CHANGE __ Seconds (until fade)
+
+
+  const clickSound = document.getElementById('clickSound');
+  document.addEventListener('click', () => {
+  clickSound.currentTime = -1;
+  clickSound.play();
+  });
+  </script>
 </body>
 
 </html>

@@ -8,7 +8,16 @@ let sceneContainer = document.querySelector
 
 let happyghost, sadghost, lamp;
 let currentGhost = 'happy';
+let lampOn, lampOff;
+let isLampOn = true;
+let room1, room2;
+let isRoom1Visible = true;
 
+const happySpeed = 0.75;
+const happyJump = 0.7;
+
+const sadSpeed = 0.3;
+const sadJump = 0.3;
 
 
 import * as THREE from 'three';
@@ -18,17 +27,18 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
+
 // ~~~~~~~~~~~~~~~~Set up~~~~~~~~~~~~~~~~
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x3a3a3a);
-scene.fog = new THREE.Fog(0xcce0ff, 35, 100); //100 = farther
+scene.fog = new THREE.Fog(0xCCEFFF, 5, 175); //100 = farther
 
 
 
 const camera = new THREE.PerspectiveCamera(75, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
 
 const light = new THREE.DirectionalLight(0xffffff, 3)
-light.position.set(1,1,5);
+light.position.set(1,2,5);
 scene.add(light);
 
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -47,11 +57,12 @@ if (ghost) {
 let time = Date.now() * 0.001; //animation/ timeee
 let radiusX = 0.05; 
 let radiusZ = 0.05;
-let speed = 0.75; //LITTLE GHOST's RUN SPEED
+let speed = 0.4; //LITTLE GHOST's RUN SPEED
+
 
 let x = Math.cos(time * speed) * radiusX;
 let z = Math.sin(time * speed) * radiusZ;
-let y = -3 + Math.sin(time * 9) * 0.7;
+let y = -3 + Math.sin(time * 9) * 0.3;
 //helped from tutorial
 
 ghost.position.set(x, y, z);
@@ -105,20 +116,37 @@ loader.load('assets/SadGhost(test).gltf', function (gltf) {
 
 const envLoader = new GLTFLoader();
 
-envLoader.load('assets/ghostroom3.gltf', function(gltf) {
-    const environment = gltf.scene;
-    scene.add(environment);
-    environment.position.set(0, -4, 0); 
-    environment.scale.set(4, 4, 4); 
+envLoader.load('assets/ghostroom4.gltf', function(gltf) {
+    room1 = gltf.scene;
+    room1.position.set(0, -4, 0); 
+    room1.scale.set(4, 4, 4); 
+    scene.add(room1); 
+});
+
+envLoader.load('assets/ghostroomsadfinal.gltf', function(gltf) {
+    room2 = gltf.scene;
+    room2.position.set(0, -4, 0); 
+    room2.scale.set(4, 4, 4); 
 });
 
 const lampLoader = new GLTFLoader();
 
+lampLoader.load('assets/litlamptest3.gltf', function(gltf) {
+    lampOn = gltf.scene;
+    lampOn.scale.set(1.5, 1.5, 1.5);
+    lampOn.position.set(4, -3, 5);
+    scene.add(lampOn);
+});
+
+// unlit lamp
 lampLoader.load('assets/lamp.gltf', function(gltf) {
-    const lamp = gltf.scene;
-    scene.add(lamp);
-    lamp.scale.set(1.5, 1.5, 1.5);
-    lamp.position.set(4, -3, 5);
+    lampOff = gltf.scene;
+    lampOff.scale.set(1.5, 1.5, 1.5);
+    lampOff.position.set(4, -3, 5);
+});
+
+
+    
    
     window.addEventListener('click', () => {
         if (currentGhost === 'happy') {
@@ -130,8 +158,29 @@ lampLoader.load('assets/lamp.gltf', function(gltf) {
             scene.add(happyghost);
             currentGhost = 'happy';
         }
+
+        if (isLampOn && lampOn && lampOff) {
+        scene.remove(lampOn);
+        scene.add(lampOff);
+        isLampOn = false;
+    } else if (!isLampOn && lampOn && lampOff) {
+        scene.remove(lampOff);
+        scene.add(lampOn);
+        isLampOn = true;
+    }
+
+            if (room1 && room2) {
+        if (isRoom1Visible) {
+            scene.remove(room1);
+            scene.add(room2);
+            isRoom1Visible = false;
+        } else {
+            scene.remove(room2);
+            scene.add(room1);
+            isRoom1Visible = true;
+        }
+    }
     });
-});
 
 
 
